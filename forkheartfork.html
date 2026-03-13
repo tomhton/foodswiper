@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>fork♥fork</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cream:   #F7F3EC;
+  --warm:    #EDE7DA;
+  --ink:     #1A1612;
+  --ink2:    #5C5248;
+  --ink3:    #9C9088;
+  --coral:   #D85A30;
+  --coral2:  #F0997B;
+  --coral-bg:#FAECE7;
+  --green:   #3B6D11;
+  --green-bg:#EAF3DE;
+  --red:     #A32D2D;
+  --red-bg:  #FCEBEB;
+  --card-r:  22px;
+  --btn-r:   14px;
+  --white:   #FFFFFF;
+  --shadow:  0 4px 24px rgba(26,22,18,0.10);
+  --shadow-sm: 0 2px 10px rgba(26,22,18,0.07);
+  font-size: 16px;
+}
+html, body { height: 100%; background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+/* ── Phone shell ── */
+.shell {
+  width: 393px; height: 852px;
+  margin: 24px auto;
+  background: var(--cream);
+  border-radius: 50px;
+  box-shadow: 0 0 0 10px #1A1612, 0 0 0 12px #3a3530, 0 30px 80px rgba(0,0,0,0.45);
+  overflow: hidden;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+@media (max-height: 920px) {
+  .shell { margin: 8px auto; }
+}
+@media (max-width: 450px) {
+  .shell { width: 100%; height: 100vh; border-radius: 0; box-shadow: none; margin: 0; }
+}
+
+/* ── Status bar ── */
+.status-bar {
+  height: 50px; flex-shrink: 0;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  padding: 0 28px 8px;
+  font-size: 13px; font-weight: 500; color: var(--ink);
+  position: relative; z-index: 10;
+}
+.status-bar .notch {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 34px;
+  background: #1A1612; border-radius: 0 0 20px 20px;
+}
+.status-icons { display: flex; gap: 6px; align-items: center; font-size: 12px; }
+
+/* ── App content area ── */
+.app-content {
+  flex: 1; overflow: hidden;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+
+/* ── Screen system ── */
+.screen { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.screen.active { display: flex; }
+
+/* ── Scrollable inner ── */
+.scroll-inner { flex: 1; overflow-y: auto; padding: 0 20px 20px; scrollbar-width: none; }
+.scroll-inner::-webkit-scrollbar { display: none; }
+
+/* ── Typography ── */
+.display { font-family: 'Fraunces', serif; font-weight: 600; }
+.display-italic { font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; }
+
+/* ── Top nav bar ── */
+.nav-bar {
+  height: 56px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+}
+.logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--ink); }
+.logo em { font-style: italic; color: var(--coral); }
+.session-pill {
+  font-size: 11px; font-weight: 500; color: var(--ink2);
+  background: var(--warm); border-radius: 20px; padding: 4px 10px;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--white); border-radius: var(--card-r);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+.card-title { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.card-sub { font-size: 13px; color: var(--ink2); margin-bottom: 16px; line-height: 1.5; }
+
+/* ── Inputs ── */
+.input-row { display: flex; gap: 8px; }
+input[type="text"], input[type="number"] {
+  flex: 1; padding: 12px 14px;
+  background: var(--cream); border: 1.5px solid var(--warm);
+  border-radius: var(--btn-r); font-size: 15px; font-family: 'DM Sans', sans-serif;
+  color: var(--ink); outline: none; transition: border-color .2s;
+}
+input:focus { border-color: var(--coral); }
+input::placeholder { color: var(--ink3); }
+
+/* ── Buttons ── */
+.btn {
+  padding: 12px 20px; border-radius: var(--btn-r);
+  font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+  border: none; cursor: pointer; transition: all .15s; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--coral); color: #fff; }
+.btn-primary:hover { background: #c0502a; transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0) scale(.98); }
+.btn-ghost { background: var(--cream); color: var(--ink2); }
+.btn-ghost:hover { background: var(--warm); }
+.btn-full { width: 100%; justify-content: center; padding: 16px 20px; font-size: 16px; border-radius: 18px; }
+
+/* ── Partner chips ── */
+.partner-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.partner-chip {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--cream); border-radius: 14px; padding: 10px 14px;
+}
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 500; flex-shrink: 0;
+}
+.chip-name { flex: 1; font-size: 14px; font-weight: 500; }
+.online-dot { width: 8px; height: 8px; border-radius: 50%; background: #63992B; }
+.chip-status { font-size: 12px; color: var(--ink3); }
+
+/* ── Zip card ── */
+.zip-card {
+  background: linear-gradient(135deg, #1A1612 0%, #3a3530 100%);
+  border-radius: var(--card-r); padding: 20px; margin-bottom: 12px;
+  color: var(--cream);
+}
+.zip-card .label { font-size: 12px; color: #9C9088; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .08em; }
+.zip-card .big-zip { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; letter-spacing: -.02em; }
+.zip-card .city-name { font-size: 13px; color: #9C9088; margin-top: 2px; }
+.zip-row { display: flex; gap: 8px; }
+.zip-row input { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); color: #fff; }
+.zip-row input::placeholder { color: rgba(255,255,255,0.4); }
+.zip-row input:focus { border-color: var(--coral2); }
+.btn-zip { background: var(--coral); color: #fff; border: none; border-radius: var(--btn-r); padding: 12px 16px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+
+/* ── Swipe area ── */
+.swipe-wrap { flex: 1; position: relative; margin: 0 20px; }
+.swipe-card {
+  position: absolute; inset: 0;
+  background: var(--white); border-radius: 28px;
+  box-shadow: var(--shadow);
+  overflow: hidden; cursor: grab; user-select: none;
+  will-change: transform;
+}
+.swipe-card.dragging { cursor: grabbing; }
+.swipe-card.fly-left { transition: transform .38s cubic-bezier(.4,0,.2,1), opacity .38s; transform: translateX(-160%) rotate(-22deg) !important; opacity: 0; }
+.swipe-card.fly-right { transition: transform .38s cubic-bezier(.4,0,.2,1), opacity .38s; transform: translateX(160%) rotate(22deg) !important; opacity: 0; }
+.swipe-card.snap-back { transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+
+.card-img-area {
+  height: 240px; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.card-img-area .rest-img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.card-img-area .emoji-fallback {
+  font-size: 96px; line-height: 1;
+}
+.img-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.35) 100%);
+}
+.cuisine-tag {
+  position: absolute; bottom: 12px; left: 12px;
+  background: rgba(255,255,255,0.92); border-radius: 20px;
+  padding: 5px 12px; font-size: 12px; font-weight: 500; color: var(--ink);
+}
+.vote-overlay {
+  position: absolute; top: 14px; right: 14px;
+  border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600;
+  opacity: 0; transition: opacity .12s; pointer-events: none;
+}
+.vote-overlay.yes { background: var(--green-bg); color: var(--green); border: 1.5px solid #97C459; }
+.vote-overlay.no  { background: var(--red-bg);   color: var(--red);   border: 1.5px solid #F09595; }
+.vote-overlay.show { opacity: 1; }
+
+.card-body-swipe { padding: 16px 20px 20px; }
+.rest-name { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.rest-meta { display: flex; gap: 14px; font-size: 13px; color: var(--ink2); margin-bottom: 10px; }
+.rest-meta span { display: flex; align-items: center; gap: 4px; }
+.rest-distance { font-size: 13px; color: var(--ink2); }
+.partner-votes-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.pvote { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+.pav { width: 24px; height: 24px; border-radius: 50%; font-size: 9px; font-weight: 500; display: flex; align-items: center; justify-content: center; }
+.pmark { font-size: 14px; }
+
+/* ── Action row ── */
+.action-row {
+  height: 90px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  gap: 32px; padding: 0 20px;
+}
+.action-btn {
+  width: 62px; height: 62px; border-radius: 50%;
+  border: none; cursor: pointer; font-size: 26px;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .12s, box-shadow .12s;
+  box-shadow: var(--shadow-sm);
+}
+.action-btn.nope { background: var(--white); color: var(--red); }
+.action-btn.yep  { background: var(--coral); color: #fff; font-size: 22px; }
+.action-btn:hover { transform: scale(1.10); box-shadow: var(--shadow); }
+.action-btn:active { transform: scale(.95); }
+
+/* ── Progress ── */
+.progress-wrap { padding: 6px 20px 0; }
+.progress-bar { height: 3px; background: var(--warm); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--coral); border-radius: 2px; transition: width .3s; }
+.progress-label { font-size: 11px; color: var(--ink3); text-align: right; margin-top: 4px; }
+
+/* ── Match popup ── */
+.match-backdrop {
+  position: absolute; inset: 0; background: rgba(26,22,18,0.55);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+}
+.match-backdrop.show { opacity: 1; pointer-events: all; }
+.match-modal {
+  background: var(--white); border-radius: 28px;
+  padding: 28px 24px 24px;
+  width: calc(100% - 48px); max-width: 320px;
+  text-align: center; position: relative;
+  transform: scale(.88); transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.match-backdrop.show .match-modal { transform: scale(1); }
+.match-emoji-big { font-size: 60px; margin-bottom: 10px; display: block; }
+.match-modal h2 { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; margin-bottom: 4px; }
+.match-modal .match-sub { font-size: 14px; color: var(--ink2); margin-bottom: 20px; line-height: 1.4; }
+.cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.cta-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 12px 8px; border-radius: 14px;
+  background: var(--cream); text-decoration: none; cursor: pointer;
+  border: none; transition: background .15s;
+}
+.cta-btn:hover { background: var(--warm); }
+.cta-icon { font-size: 24px; }
+.cta-label { font-size: 11px; font-weight: 500; color: var(--ink2); }
+
+/* ── Confetti canvas ── */
+#confetti-canvas {
+  position: absolute; inset: 0; pointer-events: none; z-index: 199;
+}
+
+/* ── Matches screen ── */
+.matches-empty { text-align: center; padding: 48px 20px; color: var(--ink2); }
+.matches-empty .big { font-size: 52px; margin-bottom: 12px; }
+.matches-empty p { font-size: 14px; margin-bottom: 20px; }
+.section-label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--ink3); margin-bottom: 10px; padding: 0 20px; }
+
+.match-card {
+  background: var(--white); border-radius: 20px;
+  margin: 0 20px 12px; padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.match-card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.match-emoji-box {
+  width: 54px; height: 54px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 34px; flex-shrink: 0;
+}
+.match-info h3 { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; margin-bottom: 2px; }
+.match-info .mi-meta { font-size: 12px; color: var(--ink2); }
+.match-voters { display: flex; gap: 4px; margin-top: 6px; }
+.match-av { width: 22px; height: 22px; border-radius: 50%; font-size: 9px; font-weight: 500; display: flex; align-items: center; justify-content: center; }
+.match-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.ma-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 9px 4px; border-radius: 12px;
+  background: var(--cream); text-decoration: none; border: none; cursor: pointer; transition: background .15s;
+}
+.ma-btn:hover { background: var(--warm); }
+.ma-icon { font-size: 18px; }
+.ma-label { font-size: 10px; color: var(--ink2); font-weight: 500; }
+.match-time { font-size: 11px; color: var(--ink3); margin-top: 10px; }
+
+/* ── Tab bar ── */
+.tab-bar {
+  height: 72px; flex-shrink: 0;
+  display: none; align-items: flex-start; justify-content: space-around;
+  padding-top: 10px;
+  background: rgba(247,243,236,0.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(26,22,18,0.08);
+}
+.tab-bar.visible { display: flex; }
+.tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  border: none; background: transparent; cursor: pointer; padding: 0;
+}
+.tab-icon { font-size: 22px; transition: transform .15s; }
+.tab-label { font-size: 10px; color: var(--ink3); font-weight: 500; transition: color .15s; }
+.tab.active .tab-label { color: var(--coral); }
+.tab.active .tab-icon { transform: scale(1.12); }
+.match-badge {
+  background: var(--coral); color: #fff; font-size: 10px; font-weight: 600;
+  border-radius: 10px; padding: 1px 5px; margin-left: 2px; vertical-align: top;
+  display: inline-block;
+}
+
+/* ── Loading / error states ── */
+.loading-card {
+  background: var(--white); border-radius: 28px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; gap: 12px; color: var(--ink2); font-size: 14px;
+}
+.spinner {
+  width: 32px; height: 32px; border: 2.5px solid var(--warm);
+  border-top-color: var(--coral); border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Swipe hint ── */
+.swipe-hint {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 28px 0; font-size: 12px; color: var(--ink3);
+}
+.hint-arrow { font-size: 16px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span id="status-time">9:41</span>
+    <div class="notch"></div>
+    <div class="status-icons">
+      <span>●●●</span>
+      <span>WiFi</span>
+      <span>🔋</span>
+    </div>
+  </div>
+
+  <div class="app-content">
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- ═══════════════════════════════
+         SCREEN 1: INVITE / SETUP
+    ═══════════════════════════════ -->
+    <div class="screen active" id="screen-invite">
+      <div class="nav-bar">
+        <div class="logo">fork<em>♥</em>fork</div>
+      </div>
+      <div class="scroll-inner">
+
+        <!-- Location card -->
+        <div class="zip-card">
+          <div class="label">📍 Your location</div>
+          <div id="zip-display" class="big-zip">—</div>
+          <div id="city-display" class="city-name">Enter zip code to find nearby spots</div>
+          <div class="zip-row" style="margin-top:14px;">
+            <input type="number" id="zip-input" placeholder="e.g. 94105" maxlength="5" style="max-width:140px;" />
+            <button class="btn-zip" onclick="fetchByZip()">Find spots</button>
+          </div>
+          <div id="zip-error" style="font-size:12px;color:#F0997B;margin-top:8px;display:none;"></div>
+        </div>
+
+        <!-- Partners card -->
+        <div class="card">
+          <div class="card-title">Who's joining?</div>
+          <div class="card-sub">Add your partner(s). Everyone votes — only shared yeses are matches.</div>
+          <div class="input-row" style="margin-bottom:14px;">
+            <input type="text" id="partner-input" placeholder="Partner's name..." maxlength="20" />
+            <button class="btn btn-primary" onclick="addPartner()">Add</button>
+          </div>
+          <div class="partner-list" id="partners-list"></div>
+        </div>
+
+        <!-- Real-time sync info -->
+        <div style="background:var(--white);border-radius:18px;padding:16px 18px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 2px 10px rgba(26,22,18,0.06);">
+          <div style="font-size:22px;flex-shrink:0;">🔗</div>
+          <div>
+            <div style="font-size:13px;font-weight:500;margin-bottom:3px;">Real-time sync</div>
+            <div style="font-size:12px;color:var(--ink2);line-height:1.5;">In production, each partner joins via a shared session code and votes sync live over WebSockets — built with Supabase or Firebase Realtime DB.</div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="start-btn" onclick="startSwiping()" disabled style="opacity:.45;">
+          Start swiping →
+        </button>
+        <div style="height:8px;"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         SCREEN 2: SWIPE
+    ═══════════════════════════════ -->
+    <div class="screen" id="screen-swipe">
+      <div class="nav-bar">
+        <div class="logo">fork<em>♥</em>fork</div>
+        <div class="session-pill" id="session-pill">—</div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div class="progress-label" id="progress-label">0 / 0</div>
+      </div>
+
+      <div class="swipe-hint">
+        <span class="hint-arrow">← nope</span>
+        <span class="hint-arrow">yep →</span>
+      </div>
+
+      <div class="swipe-wrap" id="swipe-wrap"></div>
+
+      <div class="action-row">
+        <button class="action-btn nope" onclick="swipe('no')">✕</button>
+        <button class="action-btn yep" onclick="swipe('yes')">♥</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         SCREEN 3: MATCHES
+    ═══════════════════════════════ -->
+    <div class="screen" id="screen-matches">
+      <div class="nav-bar">
+        <div class="logo" style="font-size:18px;">Matches</div>
+        <div id="match-count-pill" class="session-pill" style="display:none;background:var(--coral-bg);color:var(--coral);">0 matches</div>
+      </div>
+      <div style="flex:1;overflow-y:auto;scrollbar-width:none;" id="matches-scroll">
+        <div id="matches-content"></div>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar" id="tab-bar">
+      <button class="tab active" id="tab-swipe" onclick="showTab('swipe')">
+        <span class="tab-icon">🍽️</span>
+        <span class="tab-label">Swipe</span>
+      </button>
+      <button class="tab" id="tab-matches" onclick="showTab('matches')">
+        <span class="tab-icon">♥</span>
+        <span class="tab-label" id="matches-tab-lbl">Matches</span>
+      </button>
+    </div>
+
+    <!-- Match popup -->
+    <div class="match-backdrop" id="match-popup">
+      <div class="match-modal">
+        <span class="match-emoji-big" id="popup-emoji">🎉</span>
+        <h2>It's a match!</h2>
+        <p class="match-sub" id="popup-sub">Everyone said yes!</p>
+        <div class="cta-grid">
+          <button class="cta-btn" id="cta-opentable" onclick="openCTA('opentable')">
+            <span class="cta-icon">🍽️</span><span class="cta-label">Reserve</span>
+          </button>
+          <button class="cta-btn" id="cta-yelp" onclick="openCTA('yelp')">
+            <span class="cta-icon">⭐</span><span class="cta-label">Yelp</span>
+          </button>
+          <button class="cta-btn" id="cta-delivery" onclick="openCTA('delivery')">
+            <span class="cta-icon">🛵</span><span class="cta-label">Delivery</span>
+          </button>
+          <button class="cta-btn" id="cta-maps" onclick="openCTA('maps')">
+            <span class="cta-icon">📍</span><span class="cta-label">Maps</span>
+          </button>
+        </div>
+        <button class="btn btn-ghost btn-full" onclick="closePopup()">Keep swiping</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Clock ──
+function updateClock() {
+  const d = new Date();
+  let h = d.getHours(), m = d.getMinutes().toString().padStart(2,'0');
+  document.getElementById('status-time').textContent = `${h%12||12}:${m}`;
+}
+updateClock(); setInterval(updateClock, 10000);
+
+// ── State ──
+const AV_COLORS = [
+  {bg:'#FAECE7',text:'#4A1B0C'},{bg:'#E6F1FB',text:'#0C447C'},
+  {bg:'#EAF3DE',text:'#27500A'},{bg:'#FAEEDA',text:'#633806'},
+  {bg:'#EEEDFE',text:'#3C3489'},{bg:'#FBEAF0',text:'#72243E'},
+];
+const CUISINE_EMOJIS = {
+  italian:'🍕', japanese:'🍣', mexican:'🌮', chinese:'🥢', indian:'🍛',
+  thai:'🍜', american:'🍔', mediterranean:'🥙', vietnamese:'🍲',
+  korean:'🥘', french:'🥐', greek:'🫒', default:'🍽️'
+};
+const EMOJI_COLORS = ['#FFF8F0','#FFF0F0','#F0FFF4','#FFF5E0','#FFF8E1','#F0F8FF','#FFF0F8','#F0FFFA','#FEF9EC','#F5F0FF'];
+
+let partners = [{name:'You', initials:'YO', bg:'#FAECE7', text:'#4A1B0C'}];
+let restaurants = [];
+let votes = {};
+let matchHistory = [];
+let currentIdx = 0;
+let currentMatchData = null;
+let currentZip = '';
+let cityName = '';
+let dragging = false, startX = 0, currentX = 0, cardEl = null;
+
+function ac(i) { return AV_COLORS[i % AV_COLORS.length]; }
+function ini(n) { return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function genCode() { return Math.random().toString(36).slice(2,7).toUpperCase(); }
+
+// ── Zip / Location lookup ──
+async function fetchByZip() {
+  const zip = document.getElementById('zip-input').value.trim();
+  if (!/^\d{5}$/.test(zip)) {
+    showZipError('Please enter a valid 5-digit US zip code.');
+    return;
+  }
+  currentZip = zip;
+  document.getElementById('zip-error').style.display = 'none';
+
+  // Use zippopotam.us (free, no key needed) to resolve city name
+  try {
+    const geoRes = await fetch(`https://api.zippopotam.us/us/${zip}`);
+    if (!geoRes.ok) throw new Error('Zip not found');
+    const geoData = await geoRes.json();
+    const place = geoData.places[0];
+    cityName = `${place['place name']}, ${place['state abbreviation']}`;
+    document.getElementById('zip-display').textContent = zip;
+    document.getElementById('city-display').textContent = cityName;
+
+    // Now fetch restaurants from Yelp via CORS proxy
+    await fetchRestaurants(zip);
+  } catch(e) {
+    showZipError('Zip code not found. Try another.');
+  }
+}
+
+async function fetchRestaurants(zip) {
+  document.getElementById('city-display').textContent = 'Finding restaurants…';
+
+  // Yelp Fusion via a CORS-friendly proxy approach
+  // NOTE: In production, this call goes through your own backend to protect the API key.
+  // For this prototype we use a curated fallback dataset keyed to common zip patterns.
+  // Replace the block below with: fetch(`/api/yelp?zip=${zip}`) once your backend is ready.
+
+  const YELP_API_KEY = 'YOUR_YELP_FUSION_API_KEY'; // 🔑 Replace with your key
+  const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(`https://api.yelp.com/v3/businesses/search?location=${zip}&categories=restaurants&limit=12&sort_by=rating`)}`;
+
+  let fetchedData = null;
+
+  try {
+    const res = await fetch(proxyUrl, {
+      headers: { 'Authorization': `Bearer ${YELP_API_KEY}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.businesses && data.businesses.length > 0) {
+        fetchedData = data.businesses.map(b => ({
+          name: b.name,
+          emoji: getCuisineEmoji(b.categories),
+          cuisine: b.categories[0]?.title || 'Restaurant',
+          dist: `${(b.distance * 0.000621371).toFixed(1)} mi`,
+          price: b.price || '$$',
+          rating: b.rating.toFixed(1),
+          bg: EMOJI_COLORS[Math.floor(Math.random() * EMOJI_COLORS.length)],
+          query: encodeURIComponent(b.name + ' ' + zip),
+          yelpUrl: b.url,
+          address: b.location?.display_address?.join(', ') || '',
+          phone: b.display_phone || '',
+          imgUrl: b.image_url || '',
+        }));
+      }
+    }
+  } catch(e) { /* fall through to demo data */ }
+
+  // If API call failed (no key set, CORS issue, etc.) — use rich demo data
+  if (!fetchedData) {
+    fetchedData = getDemoRestaurants(zip);
+  }
+
+  restaurants = fetchedData;
+  simulatePartnerVotes();
+  document.getElementById('city-display').textContent = `${restaurants.length} spots near ${cityName || zip}`;
+  checkStartReady();
+}
+
+function getCuisineEmoji(categories) {
+  if (!categories || !categories.length) return '🍽️';
+  const t = categories[0].alias?.toLowerCase() || '';
+  for (const [key, em] of Object.entries(CUISINE_EMOJIS)) {
+    if (t.includes(key)) return em;
+  }
+  return CUISINE_EMOJIS.default;
+}
+
+function getDemoRestaurants(zip) {
+  // Rich demo data — stands in until real Yelp key is provided
+  const sets = [
+    {name:'Sakura Ramen', emoji:'🍜', cuisine:'Japanese', dist:'0.3 mi', price:'$$', rating:'4.7', bg:'#FFF8F0'},
+    {name:'Bella Napoli', emoji:'🍕', cuisine:'Italian', dist:'0.5 mi', price:'$$', rating:'4.5', bg:'#FFF0F0'},
+    {name:'Thai Garden', emoji:'🍛', cuisine:'Thai', dist:'0.8 mi', price:'$', rating:'4.6', bg:'#F0FFF4'},
+    {name:'The Grill House', emoji:'🥩', cuisine:'American', dist:'1.1 mi', price:'$$$', rating:'4.8', bg:'#FFF5E0'},
+    {name:'Taco Loco', emoji:'🌮', cuisine:'Mexican', dist:'0.2 mi', price:'$', rating:'4.4', bg:'#FFF8E1'},
+    {name:'Pho Saigon', emoji:'🍲', cuisine:'Vietnamese', dist:'0.6 mi', price:'$', rating:'4.7', bg:'#F0F8FF'},
+    {name:'Sushi Yuki', emoji:'🍣', cuisine:'Japanese', dist:'0.9 mi', price:'$$$', rating:'4.9', bg:'#FFF0F8'},
+    {name:'Mediterranean Breeze', emoji:'🥙', cuisine:'Mediterranean', dist:'1.4 mi', price:'$$', rating:'4.5', bg:'#F0FFFA'},
+    {name:'Seoul Kitchen', emoji:'🥘', cuisine:'Korean', dist:'1.2 mi', price:'$$', rating:'4.6', bg:'#FEF9EC'},
+    {name:'Le Petit Bistro', emoji:'🥐', cuisine:'French', dist:'0.7 mi', price:'$$$', rating:'4.5', bg:'#F5F0FF'},
+  ].map(r => ({...r, query: encodeURIComponent(r.name + ' ' + zip), yelpUrl: `https://www.yelp.com/search?find_desc=${encodeURIComponent(r.name)}&find_loc=${zip}`, address: zip, phone:''}));
+  return sets;
+}
+
+function showZipError(msg) {
+  const el = document.getElementById('zip-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+function checkStartReady() {
+  const ready = restaurants.length > 0;
+  const btn = document.getElementById('start-btn');
+  btn.disabled = !ready;
+  btn.style.opacity = ready ? '1' : '.45';
+}
+
+// ── Partners ──
+function addPartner() {
+  const inp = document.getElementById('partner-input');
+  const name = inp.value.trim();
+  if (!name || partners.find(p => p.name === name)) { inp.value = ''; return; }
+  const c = ac(partners.length);
+  partners.push({name, initials: ini(name), bg: c.bg, text: c.text});
+  inp.value = '';
+  renderPartners();
+}
+document.getElementById('partner-input').addEventListener('keydown', e => { if (e.key === 'Enter') addPartner(); });
+document.getElementById('zip-input').addEventListener('keydown', e => { if (e.key === 'Enter') fetchByZip(); });
+
+function renderPartners() {
+  document.getElementById('partners-list').innerHTML = partners.map(p => `
+    <div class="partner-chip">
+      <div class="avatar" style="background:${p.bg};color:${p.text}">${p.initials}</div>
+      <span class="chip-name">${p.name}</span>
+      <div class="online-dot"></div>
+      <span class="chip-status">Ready</span>
+    </div>`).join('');
+}
+
+// ── Simulate partner votes ──
+function simulatePartnerVotes() {
+  votes = {};
+  for (let r = 0; r < restaurants.length; r++) {
+    votes[r] = {};
+    for (let p = 1; p < partners.length; p++) {
+      votes[r][p] = Math.random() > 0.42 ? 'yes' : 'no';
+    }
+  }
+}
+
+// ── Start swiping ──
+function startSwiping() {
+  if (restaurants.length === 0) return;
+  currentIdx = 0; matchHistory = [];
+  document.getElementById('screen-invite').classList.remove('active');
+  document.getElementById('screen-swipe').classList.add('active');
+  document.getElementById('tab-bar').classList.add('visible');
+  document.getElementById('session-pill').textContent = genCode();
+  renderCard();
+}
+
+// ── Render swipe card ──
+function renderCard() {
+  const wrap = document.getElementById('swipe-wrap');
+  wrap.innerHTML = '';
+  if (currentIdx >= restaurants.length) {
+    wrap.innerHTML = `<div class="loading-card"><div style="font-size:52px">🎉</div><p style="font-size:15px;color:var(--ink2);">All restaurants reviewed!</p><button class="btn btn-primary" style="margin-top:4px;" onclick="showTab('matches')">See your matches ♥</button></div>`;
+    return;
+  }
+
+  const total = restaurants.length;
+  const pct = Math.round((currentIdx / total) * 100);
+  document.getElementById('progress').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${currentIdx} / ${total}`;
+
+  const r = restaurants[currentIdx];
+  const pvHtml = partners.slice(1).map((p, i) => {
+    const v = votes[currentIdx] && votes[currentIdx][i + 1];
+    const mark = v === 'yes'
+      ? `<span class="pmark" style="color:var(--green)">✓</span>`
+      : v === 'no'
+      ? `<span class="pmark" style="color:var(--red)">✕</span>`
+      : `<span class="pmark" style="color:var(--ink3)">?</span>`;
+    return `<div class="pvote"><div class="pav" style="background:${p.bg};color:${p.text}">${p.initials}</div>${mark}</div>`;
+  }).join('');
+
+  cardEl = document.createElement('div');
+  cardEl.className = 'swipe-card';
+  cardEl.innerHTML = `
+    <div class="card-img-area" style="background:${r.bg}">
+      ${r.imgUrl ? `<img class="rest-img" src="${r.imgUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" loading="lazy" />` : ''}
+      <div class="emoji-fallback" style="${r.imgUrl ? 'display:none' : ''}">${r.emoji}</div>
+      <div class="img-overlay"></div>
+      <span class="cuisine-tag">${r.cuisine}</span>
+      <span class="vote-overlay yes" id="badge-yes">YEP ♥</span>
+      <span class="vote-overlay no" id="badge-no">NOPE ✕</span>
+    </div>
+    <div class="card-body-swipe">
+      <div class="rest-name">${r.name}</div>
+      <div class="rest-meta">
+        <span>★ ${r.rating}</span>
+        <span>${r.price}</span>
+        <span>📍 ${r.dist}</span>
+      </div>
+      ${r.address ? `<div class="rest-distance">${r.address}</div>` : ''}
+      ${pvHtml ? `<div class="partner-votes-row">${pvHtml}</div>` : ''}
+    </div>`;
+
+  cardEl.addEventListener('mousedown', dragStart);
+  cardEl.addEventListener('touchstart', dragStart, {passive: true});
+  wrap.appendChild(cardEl);
+}
+
+// ── Drag ──
+function dragStart(e) {
+  dragging = true; cardEl.classList.add('dragging');
+  const pt = e.touches ? e.touches[0] : e;
+  startX = pt.clientX; currentX = 0;
+  document.addEventListener('mousemove', dragMove);
+  document.addEventListener('mouseup', dragEnd);
+  document.addEventListener('touchmove', dragMove, {passive: true});
+  document.addEventListener('touchend', dragEnd);
+}
+function dragMove(e) {
+  if (!dragging) return;
+  const pt = e.touches ? e.touches[0] : e;
+  currentX = pt.clientX - startX;
+  const rot = currentX * 0.06;
+  cardEl.style.transform = `translateX(${currentX}px) rotate(${rot}deg)`;
+  const by = document.getElementById('badge-yes'), bn = document.getElementById('badge-no');
+  if (currentX > 40) { by.classList.add('show'); bn.classList.remove('show'); }
+  else if (currentX < -40) { bn.classList.add('show'); by.classList.remove('show'); }
+  else { by.classList.remove('show'); bn.classList.remove('show'); }
+}
+function dragEnd() {
+  dragging = false; if (cardEl) cardEl.classList.remove('dragging');
+  document.removeEventListener('mousemove', dragMove); document.removeEventListener('mouseup', dragEnd);
+  document.removeEventListener('touchmove', dragMove); document.removeEventListener('touchend', dragEnd);
+  if (Math.abs(currentX) > 95) {
+    recordVote(currentX > 0 ? 'yes' : 'no');
+  } else {
+    if (cardEl) { cardEl.classList.add('snap-back'); cardEl.style.transform = ''; }
+    ['badge-yes','badge-no'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove('show'); });
+    setTimeout(() => { if (cardEl) cardEl.classList.remove('snap-back'); }, 300);
+  }
+}
+
+function swipe(dir) { recordVote(dir); }
+
+function recordVote(dir) {
+  if (!votes[currentIdx]) votes[currentIdx] = {};
+  votes[currentIdx][0] = dir;
+  const isMatch = dir === 'yes' && checkMatch(currentIdx);
+  const matchIdx = currentIdx;
+  if (cardEl) {
+    cardEl.classList.add(dir === 'yes' ? 'fly-right' : 'fly-left');
+    setTimeout(() => {
+      currentIdx++;
+      renderCard();
+      updateMatchBadge();
+      if (isMatch) setTimeout(() => showMatchPopup(matchIdx), 220);
+    }, 380);
+  }
+}
+
+function checkMatch(idx) {
+  const v = votes[idx] || {};
+  if (v[0] !== 'yes') return false;
+  for (let p = 1; p < partners.length; p++) { if (v[p] !== 'yes') return false; }
+  if (!matchHistory.find(m => m.idx === idx)) {
+    matchHistory.push({idx, time: new Date()});
+  }
+  return true;
+}
+
+function updateMatchBadge() {
+  const n = matchHistory.length;
+  const lbl = document.getElementById('matches-tab-lbl');
+  lbl.innerHTML = n > 0 ? `Matches <span class="match-badge">${n}</span>` : 'Matches';
+  const pill = document.getElementById('match-count-pill');
+  if (n > 0) {
+    pill.textContent = `${n} match${n>1?'es':''}`;
+    pill.style.display = 'block';
+  }
+}
+
+// ── Match popup ──
+function showMatchPopup(idx) {
+  const r = restaurants[idx];
+  currentMatchData = r;
+  document.getElementById('popup-emoji').textContent = r.emoji;
+  document.getElementById('popup-sub').textContent = `Everyone said yes to ${r.name}`;
+  document.getElementById('match-popup').classList.add('show');
+  launchConfetti();
+}
+function closePopup() {
+  document.getElementById('match-popup').classList.remove('show');
+  stopConfetti();
+}
+function openCTA(type) {
+  const r = currentMatchData;
+  if (!r) return;
+  const name = encodeURIComponent(r.name);
+  const loc = currentZip || '94105';
+  const urls = {
+    opentable: `https://www.opentable.com/s?term=${name}&covers=2&dateTime=${encodeURIComponent(new Date().toISOString().slice(0,16))}`,
+    yelp: r.yelpUrl || `https://www.yelp.com/search?find_desc=${name}&find_loc=${loc}`,
+    delivery: `https://www.doordash.com/search/store/${name}/`,
+    maps: `https://maps.google.com/?q=${name}+${loc}`,
+  };
+  window.open(urls[type], '_blank');
+}
+
+// ── Confetti ──
+let confettiRunning = false, confettiRAF = null;
+const C_COLORS = ['#D85A30','#F0997B','#FAECE7','#3B6D11','#97C459','#185FA5','#85B7EB','#FAC775','#EF9F27'];
+let particles = [];
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+  particles = [];
+  for (let i = 0; i < 130; i++) {
+    particles.push({
+      x: Math.random() * canvas.width, y: -15 - Math.random() * 80,
+      w: 7 + Math.random()*5, h: 4 + Math.random()*4,
+      color: C_COLORS[Math.floor(Math.random() * C_COLORS.length)],
+      rot: Math.random()*360, rv: (Math.random()-.5)*7,
+      vx: (Math.random()-.5)*2.5, vy: 2.5 + Math.random()*2.5,
+    });
+  }
+  confettiRunning = true; animateConfetti();
+  setTimeout(stopConfetti, 3800);
+}
+function animateConfetti() {
+  if (!confettiRunning) return;
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.y += p.vy; p.x += p.vx; p.rot += p.rv; p.vy += 0.05;
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot * Math.PI/180);
+    ctx.fillStyle = p.color; ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+    ctx.restore();
+  });
+  particles = particles.filter(p => p.y < canvas.height + 20);
+  confettiRAF = requestAnimationFrame(animateConfetti);
+}
+function stopConfetti() {
+  confettiRunning = false; cancelAnimationFrame(confettiRAF);
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// ── Tab nav ──
+function showTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('screen-' + tab).classList.add('active');
+  if (tab === 'matches') renderMatches();
+}
+
+// ── Matches screen ──
+function renderMatches() {
+  const cont = document.getElementById('matches-content');
+  if (matchHistory.length === 0) {
+    cont.innerHTML = `<div class="matches-empty"><div class="big">🍽️</div><p>No matches yet — keep swiping!</p><button class="btn btn-primary" onclick="showTab('swipe')">Back to swiping →</button></div>`;
+    return;
+  }
+  const fmt = d => { const h = d.getHours(), m = d.getMinutes().toString().padStart(2,'0'); return `${h%12||12}:${m}${h>=12?'pm':'am'}`; };
+  cont.innerHTML = `<div class="section-label" style="margin-top:8px;">${matchHistory.length} match${matchHistory.length>1?'es':''} · everyone said yes</div>` +
+    matchHistory.map(m => {
+      const r = restaurants[m.idx];
+      const voters = partners.map(p => `<div class="match-av" style="background:${p.bg};color:${p.text}">${p.initials}</div>`).join('');
+      const name = encodeURIComponent(r.name);
+      const loc = currentZip || '94105';
+      return `<div class="match-card">
+        <div class="match-card-top">
+          <div class="match-emoji-box" style="background:${r.bg}">${r.emoji}</div>
+          <div class="match-info" style="flex:1">
+            <h3>${r.name}</h3>
+            <div class="mi-meta">★ ${r.rating} &nbsp;·&nbsp; ${r.price} &nbsp;·&nbsp; ${r.dist}</div>
+            <div class="match-voters">${voters}</div>
+          </div>
+        </div>
+        <div class="match-actions">
+          <a class="ma-btn" href="https://www.opentable.com/s?term=${name}" target="_blank"><span class="ma-icon">🍽️</span><span class="ma-label">Reserve</span></a>
+          <a class="ma-btn" href="${r.yelpUrl || `https://www.yelp.com/search?find_desc=${name}&find_loc=${loc}`}" target="_blank"><span class="ma-icon">⭐</span><span class="ma-label">Yelp</span></a>
+          <a class="ma-btn" href="https://www.doordash.com/search/store/${name}/" target="_blank"><span class="ma-icon">🛵</span><span class="ma-label">Delivery</span></a>
+          <a class="ma-btn" href="https://maps.google.com/?q=${name}+${loc}" target="_blank"><span class="ma-icon">📍</span><span class="ma-label">Maps</span></a>
+        </div>
+        <div class="match-time">Matched at ${fmt(m.time)}</div>
+      </div>`;
+    }).join('');
+}
+
+// ── Init ──
+renderPartners();
+</script>
+</body>
+</html>
